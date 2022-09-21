@@ -2,17 +2,30 @@ let empParrollList;
 
 window.addEventListener('DOMContentLoaded',(event)=>
 {
+   empParrollList=getEmployeePayrollDataFromStorage();
     createInnerHtml();
     document.querySelector('.emp-count').textContent=empParrollList.length;
 });
+
+const getEmployeePayrollDataFromStorage=()=>
+{
+    return localStorage.getItem('EmployeePayrollList')?
+    JSON.parse(localStorage.getItem('EmployeePayrollList')):[];
+}
 
 const createInnerHtml=()=>
 {
     const headerHTml="<th></th><th>Name</th><th>Gender</th><th>Department</th>"+
     "<th>Salary</th><th>Start Date</th><th>Actions</th>";
 
+   if(empParrollList.length==0) 
+    { let innerHtml=`${headerHTml}`;
+    document.querySelector('#display').innerHTML=innerHtml;
+    return;}
+
+
     let innerHtml=`${headerHTml}`;
-     empParrollList=createEmployeePayrollJSON();
+     //empParrollList=createEmployeePayrollJSON();
     for(const empParrollData of empParrollList)
      { 
 
@@ -31,8 +44,8 @@ const createInnerHtml=()=>
     <td>${empParrollData._salary}</td>
     <td>${empParrollData._startDate}</td>
     <td>
-        <button name="${empParrollData._id} onclick = "remove(this)">Delete</button>
-        <button name="${empParrollData._id} onclick = "edit(this)">Edit</button>   
+        <button name="${empParrollData._name}" onclick = "remove(this)">Delete</button>
+        <button name="${empParrollData._name}" onclick = "update(this)">Edit</button>   
     </td>  
     </tr>
     `};
@@ -50,9 +63,7 @@ const getDepthtml=(depList)=>
     }
     return depHtml;
 }
-
-
-const createEmployeePayrollJSON=()=>
+/*const createEmployeePayrollJSON=()=>
 {
     let empPayrollListLocal=
     [
@@ -183,5 +194,26 @@ const createEmployeePayrollJSON=()=>
 ];
 return empPayrollListLocal;
 
+}
+*/
+
+const remove=(node)=>
+{
+    let empPayrollData=empParrollList.find(empData=>empData._name==node.name);
+    if(!empPayrollData)return;
+    const index=empParrollList
+    .map(empData=>empData._name)
+    .indexOf(empPayrollData._name);
+    empParrollList.splice(index,1);
+    localStorage.setItem("EmployeePayrollList",JSON.stringify(empParrollList));
+    document.querySelector('.emp-count').textContent=empParrollList.length;
+createInnerHtml();
+}
+
+const update=(node)=>{
+    let empPayrollData=empParrollList.find(empData=>empData._name==node.name);
+    if(!empPayrollData)return;
+    localStorage.setItem('editEmp',JSON.stringify(empPayrollData))
+    window.location.replace(site_properties.add_emp_payroll_page);
 }
 

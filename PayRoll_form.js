@@ -1,3 +1,8 @@
+let isUpdate=false;
+let employeePayrollobj=
+{};
+
+
 window.addEventListener('DOMContentLoaded',(event)=>{
     const name=document.querySelector('#name');
     const textError = document.querySelector('.text-error');
@@ -17,8 +22,13 @@ window.addEventListener('DOMContentLoaded',(event)=>{
             textError.textContent=e;
         }
       
+        
+
     }
     );
+
+
+
 
     const salary = document.querySelector('#salary');
     const output = document.querySelector('.salary-output');
@@ -26,7 +36,51 @@ window.addEventListener('DOMContentLoaded',(event)=>{
     {
         output.textContent = salary.value;
     })
+
+    checkForUpdate();
 });
+
+
+
+const checkForUpdate=()=>
+{
+    const employeePayrollJSON=localStorage.getItem('editEmp');
+    isUpdate=employeePayrollJSON?true:false;
+    if(!isUpdate) return;
+    employeePayrollobj=JSON.parse(employeePayrollJSON);
+    setForm();
+}
+
+const setForm=()=>
+{
+    setValue('#name',employeePayrollobj._name);
+    setSelectedValues('[name=profile]',employeePayrollobj._profilePic);
+
+}
+
+const setSelectedValues=(propertValue,value)=>
+{
+    let allItems=document.querySelectorAll(propertValue);
+    allItems.forEach(item =>
+        {
+            if(Array.isArray(value))
+            {
+                if(value.includes(item.value))
+                {
+                    item.checked=true;
+                }
+               
+            }
+            else if(item.value===value)
+            item.checked=true;
+        });
+}
+
+const setValue=(id,value)=>
+{
+const element=document.querySelector(id);
+element.value=value;
+}
 
 
 function createAndUpdateStorage(employeePayRollData)
@@ -52,12 +106,20 @@ const save=()=>
     try{
         let employeePayRollData=createEmployeePayRoll();
         createAndUpdateStorage(employeePayRollData);
+   
+        window.location.replace(site_properties.home_page);
+   
     }catch(e)
     {
         console.log(e);
         return;
     }
 }
+
+
+
+
+
 
 const createEmployeePayRoll=()=>
 {
@@ -71,7 +133,7 @@ const createEmployeePayRoll=()=>
     }
     employeePayrollData.profilePic=getSelectedValues('[name=profile]').pop();
     employeePayrollData.gender=getSelectedValues('[name=gender]').pop();
-    employeePayrollData.department=getSelectedValues('[name=department');
+    employeePayrollData.department=getSelectedValues('[name=department]');
     employeePayrollData.note=getInputValurById('#notes');
     employeePayrollData.salary=getInputValurById('#salary');
     let date=getInputValurById('#day')+" "+getInputValurById("#month")+" " + getInputValurById('#year');
@@ -128,9 +190,10 @@ const setTextValue=(id, value)=>{
 const element = document.querySelector(id);
 element.textContent = value;
 }
-
+/*
 const setValue=(id,value)=>
 {
     const element=document.querySelector(id);
    element.value=value;
 }
+*/

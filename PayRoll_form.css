@@ -17,6 +17,7 @@ body
    justify-content: center;
    align-items: center;
    border: 0px solid green;
+   padding-bottom: 0px;
 }
 
 .logo-content
@@ -25,7 +26,7 @@ body
     flex-direction: row;
     align-items: center;
     border: 0px solid green;
-    width: 80%; 
+    width: 42%; 
 }
 
 .logo-content-img
